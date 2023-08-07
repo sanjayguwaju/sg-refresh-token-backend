@@ -39,6 +39,28 @@ router.get('/getusertodo', async (req, res) => {
   res.json(todos);
 });
 
+// Get a specific user's todo by ID
+router.get('/getusertodo/:id', async (req, res) => {
+  // Get user from access token
+  const accessToken = req.headers.authorization.split(' ')[1];
+  const { userId } = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+
+  try {
+    // Find the todo by ID and user ID
+    const todo = await Todo.findOne({ _id: req.params.id, userId });
+
+    if (!todo) {
+      return res.status(404).send('Todo not found');
+    }
+
+    res.json(todo);
+  } catch (err) {
+    // Error handling
+    res.status(400).send(err);
+  }
+});
+
+
 // Update a todo
 router.put('/updateusertodo/:id', async (req, res) => {
   // Get user from access token
