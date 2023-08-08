@@ -110,4 +110,25 @@ router.post('/logout', async (req, res) => {
   res.sendStatus(204); // Success with no content to send
 });
 
+// Get username of the user
+router.get('/username', async (req, res) => {
+  // Get user from access token
+  const accessToken = req.headers.authorization.split(' ')[1];
+  let userId;
+  try {
+    const verified = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    userId = verified.userId;
+  } catch {
+    return res.status(403).send('Invalid token');
+  }
+
+  // Find user by ID
+  const user = await User.findById(userId);
+  if (!user) return res.status(404).send('User not found');
+
+  // Return username
+  res.json({ username: user.username });
+});
+
+
 module.exports = router;
