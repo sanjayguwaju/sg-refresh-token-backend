@@ -5,6 +5,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const specs = require('./swaggerConfig');
 
 const app = express();
 
@@ -12,6 +14,9 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());  // For parsing application/json
+
+//Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // // Connect to DB
 // mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
